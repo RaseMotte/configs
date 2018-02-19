@@ -1,0 +1,155 @@
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+" Plugin 'oblitum/YouCompleteMe'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'scrooloose/nerdtree'
+" Plugin 'rdnetto/YCM-Generator'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'godlygeek/tabular'
+Plugin 'jiangmiao/auto-pairs'
+
+call vundle#end()            " required
+filetype plugin indent on
+
+set number
+set smartindent
+set autoindent
+set ruler
+syntax on
+set background=dark
+colorscheme Hybrid
+filetype plugin indent on
+set mouse=a
+
+" changes tab with 4 spaces
+set tabstop=2
+set shiftwidth=2
+set tabstop=2
+set softtabstop=2
+set expandtab
+
+" use a different color over 80 columns
+execute "set colorcolumn=" . join(range(80,335), ',')
+
+" highlight in red trailing white space
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
+
+" Ntree
+autocmd StdinReadPre * let s:std_in=1
+" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+map <C-n> :NERDTreeToggle<CR>
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+
+" YCM
+
+let g:ycm_register_as_syntastic_checker = 1 "default 1
+let g:Show_diagnostics_ui = 1 "default 1
+
+"will put icons in Vim's gutter on lines that have a diagnostic set.
+""Turning this off will also turn off the YcmErrorLine and YcmWarningLine
+"highlighting
+let g:ycm_enable_diagnostic_signs = 1
+let g:ycm_enable_diagnostic_highlighting = 0
+let g:ycm_always_populate_location_list = 1 "default 0
+let g:ycm_open_loclist_on_ycm_diags = 1 "default 1
+"
+"
+let g:ycm_complete_in_strings = 1 "default 1
+let g:ycm_collect_identifiers_from_tags_files = 0 "default 0
+"let g:ycm_path_to_python_interpreter = '' "default ''
+" let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_add_preview_to_completeopt = 1
+"
+"
+let g:ycm_server_use_vim_stdout = 0 "default 0 (logging to console)
+let g:ycm_server_log_level = 'info' "default info
+"
+"
+let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'  "where to search
+"for .ycm_extra_conf.py if not found
+let g:ycm_confirm_extra_conf = 1
+"
+"
+let g:ycm_goto_buffer_command = 'same-buffer' "[ 'same-buffer', 'horizontal-split', 'vertical-split', 'new-tab' ]"
+let g:ycm_filetype_whitelist = { '*': 1 }
+let g:ycm_key_invoke_completion = '<C-Space>'
+
+let g:ycm_collect_identifiers_from_tags_files = 1
+let g:ycm_min_num_of_chars_for_completion = 3
+
+"
+" Add tab completion:
+" let g:clang_snippets_engine='clang_complete'
+" set ttimeoutlen=50
+"
+nnoremap <F11> :YcmForceCompileAndDiagnostics <CR>
+
+" Bar
+if !exists('g:airline_symbols')
+	let g:airline_symbols = {}
+endif
+
+let g:airline_right_alt_sep = ''
+set laststatus=2
+" unicode symbols
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
+let g:airline_symbols.linenr = 'Ξ'
+let g:airline_symbols.paste = 'ρ'
+let g:airline_detect_spell=0
+let g:airline#extensions#whitespace#enabled = 1
+let g:airline_symbols.whitespace = '□□'
+
+" "configure the formatting of the warning messages. >
+let g:airline#extensions#whitespace#mixed_indent_format = 'MI[%s]'
+let g:airline#extensions#whitespace#trailing_format = 'T[%s]'
+" " regex for trailing white space, looks for TWO spaces, not one
+let g:airline#extensions#whitespace#trailing_regexp = '\s\s$'
+" " orange for mixed-indent
+let g:airline#extensions#whitespace#checks = [ 'indent', 'trailing']
+let g:airline#extensions#branch#enabled = 0
+" Prepend $ sign if Obsession is active
+"
+" " Tells airline not to display file format
+let g:airline_section_x =''
+" " Tells airline not to display fileencoding or fileformat
+let g:airline_section_y =''
+" " If need to know these then simply do:
+" " set ff for fileformat
+" " set fenc for fileencoding
+" " set ft for filetype
+"
+" " Paste the following into your vimrc for shortform text
+" " N instead of NORMAL, I instead of INSERT
+"
+:let g:airline_theme='badwolf'
+set ttimeoutlen=50
+set noshowmode
+set hlsearch      " highlight search terms
+set incsearch     " show search matches as you type
+
+" Auto header for *.c files
+autocmd bufnewfile *.c so /Users/utilisateur/.vim/c_header
+autocmd bufnewfile *.c exe "1," . 7 . "g/File Name     :.*/s//File Name     : " .expand("%")
+autocmd bufnewfile *.c exe "1," . 7 . "g/Creation Date :.*/s//Creation Date : " .strftime("%d-%m-%Y")
+autocmd bufnewfile *.c exe "7j"
+
+autocmd Bufwritepre,filewritepre *.c execute "normal ma"
+autocmd Bufwritepre,filewritepre *.c exe "1," . 7 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%c")
+autocmd bufwritepost,filewritepost *.c execute "normal `a"
